@@ -56,16 +56,25 @@ end
 
 rule "Why do you want a classic car?"
 	when
-		m : Instance(question == "Why do you want a classic car?")
+		m : Instance(question == "Why do you want a classic car?" && decision == "Reliability and convenience bore me")// || m : Instance(response == "Reliability and convenience bore me")
 	then
 		Instance ins = new Instance();
-		if (m.getDecision()==(m.getResponse().get(0))) {
-			ins.setQuestion("Oh yeah thats why?");
-			ins.setResponse(Arrays.asList("I'm erotically drawn to tow trucks and freeway shoulders",
+		ins.setQuestion("Oh yeah thats why?");
+		ins.setResponse(Arrays.asList("I'm erotically drawn to tow trucks and freeway shoulders",
 			 "I want to know how cars work"));
-		} else if{ (m.getDecision().equals(m.getResponse().get(1)))
-			ins.setQuestion("Great what statement?");
-			ins.setResponse(Arrays.asList("The mothership left me ins paris",
+		insert(ins);
+		ask(frame, ins);
+		update(ins)
+end
+
+rule "Why do you want a classic car2?"
+	when
+		m : Instance(question == "Why do you want a classic car?" && decision == "I guess I'm making some kind of statement about something?")
+		
+	then
+		Instance ins = new Instance();
+		ins.setQuestion("Great what statement?");
+		ins.setResponse(Arrays.asList("The mothership left me ins paris",
 			"I live dangerously and nader can suck it",
 			"I'm a kook, an American Kook",
 			"I take driving seriously and have the gloves to prove it",
@@ -76,9 +85,7 @@ rule "Why do you want a classic car?"
 			"I like being part of a massive automotive subculture",
 			"I will only drive vehicles with two distinct luggage areas",
 			"I run an nye themed diner ins Las Vegas",
-			"I'm really rich but I like to pretend a hippie",
-			));
-		}
+			"I'm really rich but I like to pretend a hippie"));
 		insert(ins);
 		ask(frame, ins);
 		update(ins)
@@ -86,20 +93,51 @@ end
 
 rule "Oh yeah thats why?"
 	when
-		m : Instance(question == "Oh yeah thats why?")
+		m : Instance(question == "Oh yeah thats why?" && decision == "I'm erotically drawn to tow trucks and freeway shoulders")
 	then
 		Instance ins = new Instance();
-		if (m.getDecision()==(m.getResponse().get(0))) {
-			ins.setQuestion("Ok, should it be pretty quick?");
-			ins.setResponse(Arrays.asList("Yes", "Also really lovely"));
-		} else {
-			ins.setQuestion("So, something really simple?");
-			ins.setResponse(Arrays.asList("Sounds good", "Not that archaic","More archaic"));
-		}
+		ins.setQuestion("Ok, should it be pretty quick?");
+		ins.setResponse(Arrays.asList("Yes", "Also really lovely"));
 		insert(ins);
 		ask(frame, ins);
 		update(ins)
 end
+
+rule "Oh yeah thats why?2"
+	when
+		m : Instance(question == "Oh yeah thats why?" && decision == "I want to know how cars work")
+	then
+		Instance ins = new Instance();
+		ins.setQuestion("So, something really simple?");
+		ins.setResponse(Arrays.asList("Sounds good", "Not that archaic","More archaic"));
+		
+		insert(ins);
+		ask(frame, ins);
+		update(ins)
+end
+
+rule "Result->Ok, should it be pretty quick?"
+	when
+		m : Instance(question == "Ok, should it be pretty quick?" && decision == "Also really lovely")
+		//m : Instance(response == "Also really lovely")
+	then
+		Instance ins = new Instance();
+		ins.setResponse (Arrays.asList("Lotus Elan"));
+		insert(ins);
+		result(frame, ins);		
+end
+/*
+rule "Result->Ok, should it be pretty quick2?"
+	when
+		m : Instance(question == "Ok, should it be pretty quick?")
+		m : Instance(response == "Yes")
+	then
+		Instance ins = new Instance();
+		ins.setResponse (Arrays.asList("Lotus Elan"));
+		insert(ins);
+		result(frame, ins);		
+end
+
 
 
 rule "Result->Ok, should it be pretty quick?"
@@ -154,5 +192,35 @@ rule "Result -> multiple car choice"
 		
 end
 
+rule "Great what statement?"
+	when
+		m : Instance(question == "Great what statement?")
+	then
+		Instance ins = new Instance();
+		if (m.getDecision()==(m.getResponse().get(0))) {
+			ins.setResponse(Arrays.asList("Citroen SM"));
+			insert(ins);
+			result(frame, ins);
+		} 
+		if (m.getDecision()==(m.getResponse().get(1))) {
+				ins.setResponse(Arrays.asList("Chevy Corvair"));
+				insert(ins);
+				result(frame, ins);
+		}
 
+		if (m.getDecision()==(m.getResponse().get(2))) {
+			ins.setQuestion("Choose your car");
+			ins.setResponse(Arrays.asList("Amc Pacer", "Amc Gremlin","Amc Amx"));
+			insert(ins);
+			ask(frame,ins);
+			update(ins);
+			}
+		
+		
+		
+		
+				
 
+end
+
+*/
