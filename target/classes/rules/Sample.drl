@@ -12,27 +12,27 @@ import java.util.List;
 
 global JFrame frame
 
-declare Choice
+declare Instance
 	decision : String
 	question : String
 	response : List	
 end
 
-function void ask(JFrame frame, Choice c) {
+function void ask(JFrame frame, Instance ins) {
 		
-		c.setDecision((String) JOptionPane.showInputDialog(frame,
-											 c.getQuestion(),
-											 "",
+		ins.setDecision((String) JOptionPane.showInputDialog(frame,
+											 ins.getQuestion(),
+											 "Question",
 											 JOptionPane.QUESTION_MESSAGE,
 											 null,
-											 c.getResponse().toArray(),
-											 c.getResponse().toArray()[0]));
+											 ins.getResponse().toArray(),
+											 ins.getResponse().toArray()[0]));
 }
-function void showresult(JFrame frame, Choice c) {
+function void result(JFrame frame, Instance ins) {
 		List ok =new ArrayList(Arrays.asList("Confirm"));
 		
 		JOptionPane.showOptionDialog(frame,
-											 c.getResponse().toArray()[0],
+											 ins.getResponse().toArray()[0],
 											 "Result",JOptionPane.YES_NO_OPTION,
 											 JOptionPane.QUESTION_MESSAGE,
 											 null,
@@ -43,109 +43,116 @@ function void showresult(JFrame frame, Choice c) {
 
 rule "start"
 	then
-		Choice c = new Choice();
-		c.setQuestion("Why do you want a classic car?");
-		c.setResponse(Arrays.asList("Reliability and convenience bore me",
+		Instance ins = new Instance();
+		ins.setQuestion("Why do you want a classic car?");
+		ins.setResponse(Arrays.asList("Reliability and convenience bore me",
 		"I guess I'm making some kind of statement about something?",
 		"I prefer the style",
 		"New cars have no soul", "Love speed "));
-		insert(c);
-		ask(frame, c);
-		update(c)
+		insert(ins);
+		ask(frame, ins);
+		update(ins)
 end
 
 rule "Why do you want a classic car?"
 	when
-		m : Choice(question == "Why do you want a classic car?")
+		m : Instance(question == "Why do you want a classic car?")
 	then
-		Choice c = new Choice();
+		Instance ins = new Instance();
 		if (m.getDecision()==(m.getResponse().get(0))) {
-			c.setQuestion("Oh yeah thats why?");
-			c.setResponse(Arrays.asList("I'm erotically drawn to tow trucks and freeway shoulders",
+			ins.setQuestion("Oh yeah thats why?");
+			ins.setResponse(Arrays.asList("I'm erotically drawn to tow trucks and freeway shoulders",
 			 "I want to know how cars work"));
 		} else if{ (m.getDecision().equals(m.getResponse().get(1)))
-			c.setQuestion("Great what statement?");
-			c.setResponse(Arrays.asList("The mothership left me in paris",
+			ins.setQuestion("Great what statement?");
+			ins.setResponse(Arrays.asList("The mothership left me ins paris",
 			"I live dangerously and nader can suck it",
 			"I'm a kook, an American Kook",
 			"I take driving seriously and have the gloves to prove it",
 			"My wallet is on the chain",
 			"I'm a refugee from an alternate future, with zeppelins and shit",
-			"I hate people knowing what i drive",
+			"I hate people knowing what ins drive",
 			"I kinda wanted a motorcycle but I have no balance",
 			"I like being part of a massive automotive subculture",
 			"I will only drive vehicles with two distinct luggage areas",
-			"I run an nye themed diner in Las Vegas",
+			"I run an nye themed diner ins Las Vegas",
 			"I'm really rich but I like to pretend a hippie",
 			));
 		}
-		insert(c);
-		ask(frame, c);
-		update(c)
+		insert(ins);
+		ask(frame, ins);
+		update(ins)
 end
 
 rule "Oh yeah thats why?"
 	when
-		m : Choice(question == "Oh yeah thats why?")
+		m : Instance(question == "Oh yeah thats why?")
 	then
-		Choice c = new Choice();
+		Instance ins = new Instance();
 		if (m.getDecision()==(m.getResponse().get(0))) {
-			c.setQuestion("Ok, should it be pretty quick?");
-			c.setResponse(Arrays.asList("Yes", "Also really lovely"));
+			ins.setQuestion("Ok, should it be pretty quick?");
+			ins.setResponse(Arrays.asList("Yes", "Also really lovely"));
 		} else {
-			c.setQuestion("So, something really simple?");
-			c.setResponse(Arrays.asList("Sounds good", "Not that archaic","More archaic"));
+			ins.setQuestion("So, something really simple?");
+			ins.setResponse(Arrays.asList("Sounds good", "Not that archaic","More archaic"));
 		}
-		insert(c);
-		ask(frame, c);
-		update(c)
+		insert(ins);
+		ask(frame, ins);
+		update(ins)
 end
 
 
 rule "Result->Ok, should it be pretty quick?"
 	when
-		m : Choice(question == "Ok, should it be pretty quick?")
+		m : Instance(question == "Ok, should it be pretty quick?")
 	then
-		Choice c = new Choice();
+		Instance ins = new Instance();
 		if (m.getDecision()==(m.getResponse().get(0))) {
-			c.setResponse (Arrays.asList("Lotus Elan"));
+			ins.setResponse (Arrays.asList("Lotus Elan"));
 		} else {
-			c.setResponse(Arrays.asList("Alfa Romeo Giuilia Super"));
+			ins.setResponse(Arrays.asList("Alfa Romeo Giuilia Super"));
 		}
-		insert(c);
-		showresult(frame, c);
-		update(c)
+		insert(ins);
+		result(frame, ins);
 		
 end
 
 rule "So, something really simple?"
 	when
-		m : Choice(question == "So, something really simple?")
+		m : Instance(question == "So, something really simple?")
 	then
-		Choice c = new Choice();
+		Instance ins = new Instance();
 		if (m.getDecision()==(m.getResponse().get(0))) {
-			c.setQuestion("Result");
-			c.setResponse(Arrays.asList("Citroen 2CV", "VW Thing","Jeep","Honda Civic"));
-			insert(c);
-			ask(frame,c)
-			update(c)
-		} else {
-			c.setQuestion("So, something really simple?");
-			c.setResponse(Arrays.asList("Sounds good", "Not that archaic","More archaic"));
-			insert(c);
-			ask(frame, c);
-			update(c)
+			ins.setQuestion("Choose your car");
+			ins.setResponse(Arrays.asList("Citroen 2CV", "VW Thing","Jeep","Honda Civic"));
+			insert(ins);
+			ask(frame,ins);
+			update(ins);
+		} else {if (m.getDecision()==(m.getResponse().get(1))){
+			//ins.setQuestion("So, something really simple?");
+			ins.setResponse(Arrays.asList("Ford Model A"));
+			insert(ins);
+			result(frame,ins);
+			}
+			else{
+				ins.setResponse(Arrays.asList("Ford Model T"));
+				insert(ins);
+				result(frame,ins);
+			}
 		}
 		
 end
 
 rule "Result -> multiple car choice"
 	when
-		m : Choice(question == "Result")
+		m : Instance(question == "Choose your car")
 	then
-		Choice c = new Choice();
-		c.setResponse(Arrays.asList(m.getDecision));
-		insert(c);
-		showresult(frame, c);
-		update(c);
+		Instance ins = new Instance();
+		ins.setResponse(Arrays.asList(m.getDecision));
+		insert(ins);
+		result(frame, ins);
+		
 end
+
+
+
